@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B70E9CD0E0DE2901F2BD824 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CE102624DE04FC17E79B2C8 /* Assets.xcassets */; };
 		54274018DFEC407150FDB643 /* Marginalia in Frameworks */ = {isa = PBXBuildFile; productRef = 5BFFA46BF14CBB6C12360F80 /* Marginalia */; };
 		8C23B1EA8556BB1F69D43FE1 /* MarginaliaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDD0A8176BFE050C451CFA /* MarginaliaApp.swift */; };
+		AAA45EE61953008A5C89D3E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0CE102624DE04FC17E79B2C8 /* Assets.xcassets */; };
 		C41A03318C256FF6F7EB3FA7 /* Marginalia in Frameworks */ = {isa = PBXBuildFile; productRef = 9C7FC66D7420D518CE33140A /* Marginalia */; };
 		E15C0A5AB998FFECB01CCC48 /* MarginaliaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FDD0A8176BFE050C451CFA /* MarginaliaApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0CE102624DE04FC17E79B2C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4CE7188E1E6FB371EC3A9B60 /* MarginaliaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarginaliaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75FDD0A8176BFE050C451CFA /* MarginaliaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarginaliaApp.swift; sourceTree = "<group>"; };
 		B74E8E12EBDFEFA62FEAF248 /* MarginaliaApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = MarginaliaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,6 +46,7 @@
 		0F8A15509E140AD32502D24A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				0CE102624DE04FC17E79B2C8 /* Assets.xcassets */,
 				75FDD0A8176BFE050C451CFA /* MarginaliaApp.swift */,
 			);
 			path = Sources;
@@ -82,6 +86,7 @@
 			buildConfigurationList = 35DAE6CDF9AA9FF57D1C3476 /* Build configuration list for PBXNativeTarget "MarginaliaApp_iOS" */;
 			buildPhases = (
 				DF509777412454CFB6697223 /* Sources */,
+				23DED6E566F820E1CF67E06C /* Resources */,
 				F20CFBB8301D4CF144009C70 /* Frameworks */,
 			);
 			buildRules = (
@@ -101,6 +106,7 @@
 			buildConfigurationList = D169D58D6075EF093A8366C3 /* Build configuration list for PBXNativeTarget "MarginaliaApp_macOS" */;
 			buildPhases = (
 				D2A1536C5158D1344E18900E /* Sources */,
+				EE06FFF404495841A80E4841 /* Resources */,
 				9DE1B5066DC23C15D65EAA74 /* Frameworks */,
 			);
 			buildRules = (
@@ -154,6 +160,25 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		23DED6E566F820E1CF67E06C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B70E9CD0E0DE2901F2BD824 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE06FFF404495841A80E4841 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAA45EE61953008A5C89D3E3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D2A1536C5158D1344E18900E /* Sources */ = {

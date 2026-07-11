@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import JournalKit
 
 /// Marginalia 页边集——单词手账（记忆花园的开源小甜品）。
 ///
@@ -21,6 +22,8 @@ public struct MarginaliaPanel: View {
 
     public var body: some View {
         ZStack {
+            PixelLaceBackdrop().ignoresSafeArea()   // 铺满上下安全区（standalone 顶层是安全的，
+                                                    // 主库 HC 溢出坑只在嵌套 UIKit 容器里）
             VocabPanelView()
             GlobalToastOverlay()
         }

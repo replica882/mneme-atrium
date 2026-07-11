@@ -44,7 +44,7 @@ struct VocabSettingsTab: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(JournalTheme.sage)
+        .background(PixelLaceBackdrop(sparse: true).ignoresSafeArea())
         .navigationTitle("单词")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
