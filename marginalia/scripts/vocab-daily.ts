@@ -18,10 +18,9 @@ if (process.argv[2] === "--word" && !WORD_MODE) {
 }
 const N = Math.max(1, parseInt(process.argv[2] ?? "30", 10) || 30)
 const SCRIPT_DIR = import.meta.dir                       // <repo>/scripts/vocab
-const REPO_ROOT = dirname(dirname(SCRIPT_DIR))
 const WORD_LIST = join(SCRIPT_DIR, "词汇表_雅思加强版.txt")
 const SYSTEM_PROMPT_FILE = join(SCRIPT_DIR, "语言考古学家_批量版.md")
-const OUT_DIR = join(REPO_ROOT, "MemoryPalace", "Resources", "vocab-corpus")
+const OUT_DIR = join(SCRIPT_DIR, "..", "Sources", "Marginalia", "Resources", "vocab-corpus")
 
 const home = process.env.HOME ?? ""
 const CLAUDE = [join(home, ".local", "bin", "claude"), "claude"].find((p) =>
