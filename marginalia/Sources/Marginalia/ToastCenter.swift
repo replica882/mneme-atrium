@@ -25,8 +25,10 @@ final class ToastCenter {
 }
 
 /// 挂在 ContentView 根部的展示层（胶囊样式与原各处 toast 一致）。
-struct GlobalToastOverlay: View {
-    var body: some View {
+public struct GlobalToastOverlay: View {
+    public init() {}
+
+    public var body: some View {
         Group {
             if let msg = ToastCenter.shared.message {
                 Text(msg)

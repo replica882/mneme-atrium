@@ -20,7 +20,10 @@ public struct MarginaliaPanel: View {
     }
 
     public var body: some View {
-        VocabPanelView()
-            .environment(\.vocabBridge, bridge)
+        ZStack {
+            VocabPanelView()
+            GlobalToastOverlay()
+        }
+        .environment(\.vocabBridge, bridge)
     }
 }
