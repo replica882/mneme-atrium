@@ -33,6 +33,9 @@ struct VocabPanelView: View {
         .padding(.top, 10)
         .padding(.bottom, 10)
         .task {
+            // 启动参数指定初始 tab（simctl launch ... -marginaliaInitialTab 2；截图/自动化用）
+            let initial = UserDefaults.standard.integer(forKey: "marginaliaInitialTab")
+            if (1...3).contains(initial) { store.tab = initial }
             await store.bootstrap(context: modelContext)
             // bootstrap 完后消费 pending jump（widget tap 时本 view 还没渲染，
             // 通知丢了——用 UserDefaults 中转兜底）
