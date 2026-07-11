@@ -9,6 +9,7 @@ import JournalKit
 ///
 /// 目前只有一项：「问 {{char}}」按钮的 prompt 模板。
 struct VocabSettingsTab: View {
+    @Environment(\.vocabBridge) private var bridge
     @AppStorage("vocabAskPromptTemplate") private var template: String = VocabPromptDefaults.template
     @AppStorage("vocabShuffleByDefault") private var shuffleByDefault: Bool = false
     @AppStorage("vocabReviewDailyQuota") private var reviewDailyQuota: Int = 10
@@ -30,10 +31,12 @@ struct VocabSettingsTab: View {
         Form {
             orderSection
             reviewSection
-            placeholderSection
-            templateSection
-            previewSection
-            resetSection
+            if bridge.askAI != nil {
+                placeholderSection
+                templateSection
+                previewSection
+                resetSection
+            }
 
             Section {
             } footer: {
@@ -45,7 +48,7 @@ struct VocabSettingsTab: View {
         }
         .scrollContentBackground(.hidden)
         .background(Color(hex: 0xFAFAF8).ignoresSafeArea())
-        .navigationTitle("单词")
+        .navigationTitle("Settings")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -55,14 +58,14 @@ struct VocabSettingsTab: View {
 
     private var orderSection: some View {
         Section {
-            Toggle("默认随机出词", isOn: $shuffleByDefault)
+            Toggle("Shuffle by default", isOn: $shuffleByDefault)
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("出词顺序")
+            Text("Word order")
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("关：按 priority 推荐学习顺序出词（高频先）。\n开：每次重新筛选/切设置时洗牌，每轮都是新随机。")
+            Text("Off: words come in recommended order (high-frequency first).\nOn: shuffled every time you refilter or revisit settings.")
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -74,7 +77,7 @@ struct VocabSettingsTab: View {
         Section {
             Stepper(value: $reviewDailyQuota, in: 0...50) {
                 HStack {
-                    Text("每日新卡")
+                    Text("Daily new cards")
                     Spacer()
                     Text("\(reviewDailyQuota)")
                         .foregroundColor(JournalTheme.pencil)
@@ -85,23 +88,23 @@ struct VocabSettingsTab: View {
 
             Stepper(value: $reviewDailyCap, in: 0...300, step: 10) {
                 HStack {
-                    Text("每日复习上限")
+                    Text("Daily review cap")
                     Spacer()
-                    Text(reviewDailyCap == 0 ? "不限" : "\(reviewDailyCap)")
+                    Text(reviewDailyCap == 0 ? "no limit" : "\(reviewDailyCap)")
                         .foregroundColor(JournalTheme.pencil)
                         .monospacedDigit()
                 }
             }
             .listRowBackground(JournalTheme.cream)
 
-            Toggle("划词收词进复习", isOn: $reviewAutoFromReading)
+            Toggle("Auto-add highlighted words to review", isOn: $reviewAutoFromReading)
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("复习")
+            Text("Review")
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("每日新卡：复习页每天自动从所选词书按顺序补充这么多张新卡，0 = 不自动补。\n每日复习上限：今天最多复习这么多张（新卡+到期都算），到量出完成页；没排进今天的到期卡明天照常出现，0 = 不限。\n划词收词进复习：开了之后，阅读器或聊天里划词收进生词本的词自动加入复习牌堆。\n\n题型随熟悉度爬坡：新卡出认读（先猜后看），答对两次后出拼写（按释义或原句挖空默写），间隔拉到 7 天以上出造句（AI 判分）；答错会跌回认读重学。长按卡片可从牌堆移除。")
+            Text("Daily new cards: how many new cards get pulled in each day from the selected wordbook, in order. 0 = don't auto-supply.\nDaily review cap: max cards reviewed today (new + due combined); once hit, you'll see the done screen. Overflow due cards just wait until tomorrow. 0 = no cap.\nAuto-add: words you collect while reading or chatting go straight into the review deck.\n\nExercises climb with familiarity: new cards start as read-and-reveal, then spelling (fill the blank from the definition or source sentence) once you've gotten it right twice, then sentence-writing once the interval passes 7 days. A miss drops it back to read-and-reveal. Long-press a card to remove it from the deck.")
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -125,10 +128,10 @@ struct VocabSettingsTab: View {
                 .listRowBackground(JournalTheme.cream)
             }
         } header: {
-            Text("可用占位符")
+            Text("Available placeholders")
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("`{forms}` 或 `{status}` 为空时整行自动隐藏，不会出现空冒号。")
+            Text("`{forms}` or `{status}` hide their whole line automatically when empty — no dangling colons.")
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -144,10 +147,10 @@ struct VocabSettingsTab: View {
                 .scrollContentBackground(.hidden)
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("模板")
+            Text("Template")
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("按下「问 {{char}}」按钮时这套模板会被渲染成 prompt 发给当前楼层 AI。")
+            Text("Rendered into the prompt sent to your AI when you tap “ask {{char}}”.")
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -163,7 +166,7 @@ struct VocabSettingsTab: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("预览（带词形 + 已标 反应慢）")
+            Text("Preview (with word forms + marked as slow)")
                 .foregroundColor(JournalTheme.faint)
         }
     }
@@ -171,12 +174,12 @@ struct VocabSettingsTab: View {
     private var previewText: String {
         VocabPromptDefaults.render(template: template, vars: [
             "word": "ephemeral",
-            "definition": "短暂的；瞬息的",
+            "definition": "brief; fleeting",
             "band": "Specialized / overlap",
             "categories": "Academic NAWL",
             "forms": "ephemerals, ephemerally",
-            "status": "反应慢",
-            "assistantName": "小克",
+            "status": "slow",
+            "assistantName": "the assistant",
         ])
     }
 
@@ -187,18 +190,18 @@ struct VocabSettingsTab: View {
             Button {
                 showResetConfirm = true
             } label: {
-                Text("恢复默认模板")
+                Text("Reset to default")
                     .foregroundColor(JournalTheme.clay)
             }
             .listRowBackground(JournalTheme.cream)
         }
-        .confirmationDialog("把模板恢复成默认？", isPresented: $showResetConfirm, titleVisibility: .visible) {
-            Button("恢复", role: .destructive) {
+        .confirmationDialog("Reset the template to default?", isPresented: $showResetConfirm, titleVisibility: .visible) {
+            Button("Reset", role: .destructive) {
                 template = VocabPromptDefaults.template
             }
-            Button("取消", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
         } message: {
-            Text("当前编辑的模板会被覆盖。")
+            Text("This will overwrite your current edits.")
         }
     }
 }

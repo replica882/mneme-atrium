@@ -9,10 +9,10 @@ enum VocabQuotaSource: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .ngsl:     return "NGSL 词表"
-        case .ielts:    return "雅思考古表"
-        case .gap:      return "缺口（刷词标过卡/不认识）"
-        case .notebook: return "生词本"
+        case .ngsl:     return "NGSL wordlist"
+        case .ielts:    return "IELTS dig list"
+        case .gap:      return "gaps (marked slow/unknown)"
+        case .notebook: return "notebook"
         }
     }
 

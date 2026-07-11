@@ -204,27 +204,27 @@ struct VocabNotebookView: View {
                         .listRowBackground(JournalTheme.cream)
                         .onSubmit { confirmAdd() }
                 } header: {
-                    Text("收进生词本")
+                    Text("Add to notebook")
                         .foregroundColor(JournalTheme.faint)
                 } footer: {
-                    Text("不限词表，今天学到什么收什么。词组也可以。")
+                    Text("Any word, any list — whatever you picked up today. Phrases work too.")
                         .font(.system(size: JournalTheme.F.caption))
                         .foregroundColor(JournalTheme.faint)
                 }
             }
             .scrollContentBackground(.hidden)
             .background(JournalTheme.sage)
-            .navigationTitle("加词")
+            .navigationTitle("Add word")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("取消") { showAddSheet = false }
+                    Button("Cancel") { showAddSheet = false }
                         .foregroundColor(JournalTheme.pencil)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("收入") { confirmAdd() }
+                    Button("Add") { confirmAdd() }
                         .foregroundColor(JournalTheme.mint)
                         .disabled(addDraft.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
@@ -240,10 +240,10 @@ struct VocabNotebookView: View {
         showAddSheet = false
         guard !raw.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         if let word = VocabCollector.collectManually(rawText: raw, context: modelContext) {
-            ToastCenter.shared.show("已收「\(word)」✨")
+            ToastCenter.shared.show("Added “\(word)” ✨")
             Task { await reload() }
         } else {
-            ToastCenter.shared.show("这个不适合收词")
+            ToastCenter.shared.show("That doesn’t look like a word")
         }
     }
 
@@ -277,7 +277,7 @@ struct VocabNotebookView: View {
         .padding(.bottom, 6)
 
         if !normalized.isEmpty && !exactInLibrary {
-            searchRow(word: normalized, definition: "词库外 · 收为自定义词条", alreadyIn: collected.contains(normalized))
+            searchRow(word: normalized, definition: "not in library · added as custom entry", alreadyIn: collected.contains(normalized))
         }
         ForEach(searchResults) { w in
             searchRow(word: w.word, definition: w.definition, alreadyIn: collected.contains(w.word))
@@ -327,10 +327,10 @@ struct VocabNotebookView: View {
                 progress.anchorText = nil
                 try? modelContext.save()
             }
-            ToastCenter.shared.show("已移出「\(word)」")
+            ToastCenter.shared.show("Removed “\(word)”")
             Task { await reload() }
         } else if VocabCollector.collectManually(rawText: word, context: modelContext) != nil {
-            ToastCenter.shared.show("已收「\(word)」✨")
+            ToastCenter.shared.show("Added “\(word)” ✨")
             // 不清搜索——查词心智下收完继续浏览，行上 ✨ 随 reload 变实心
             Task { await reload() }
         }
@@ -351,7 +351,7 @@ struct VocabNotebookView: View {
             cards.removeAll { $0.word == word }
             VocabCardStore.save(cards)
         }
-        ToastCenter.shared.show("已移出「\(word)」")
+        ToastCenter.shared.show("Removed “\(word)”")
         Task { await reload() }
     }
 
@@ -401,10 +401,10 @@ struct VocabNotebookView: View {
                         cards.removeAll { $0.word == entry.word }
                         VocabCardStore.save(cards)
                         deckWords.remove(entry.word)
-                        ToastCenter.shared.show("已从复习牌堆移除")
+                        ToastCenter.shared.show("Removed from review deck")
                     } else if VocabCardStore.addIfAbsent(word: entry.word, source: "notebook") {
                         deckWords.insert(entry.word)
-                        ToastCenter.shared.show("「\(entry.word)」已进复习 🔁")
+                        ToastCenter.shared.show("“\(entry.word)” added to review 🔁")
                     }
                 } label: {
                     Image(systemName: "repeat")
@@ -424,7 +424,7 @@ struct VocabNotebookView: View {
             Button(role: .destructive) {
                 removeFromNotebook(entry)
             } label: {
-                Label("移出生词本（复习卡一并删）", systemImage: "trash")
+                Label("Remove from notebook (also deletes review card)", systemImage: "trash")
             }
         }
     }
@@ -474,7 +474,7 @@ struct VocabNotebookView: View {
     /// 行长按「标签…」子菜单：已有 tag 打勾切换（横向 tap 防手滑分裂），新建走词详情。
     @ViewBuilder
     private func tagMenu(for entry: Entry) -> some View {
-        Menu("标签…") {
+        Menu("Tags…") {
             ForEach(allTags, id: \.self) { t in
                 Button {
                     VocabTagStore.toggle(word: entry.word, tag: t)
@@ -488,7 +488,7 @@ struct VocabNotebookView: View {
                 }
             }
             if allTags.isEmpty {
-                Text("还没有标签，去词详情建一个")
+                Text("No tags yet — make one from a word’s detail page")
             }
         }
     }
@@ -530,7 +530,7 @@ struct VocabNotebookView: View {
             var label: String? = nil
             if let ref = p.sourceBookRef,
                let parsed = VocabStudyView.parseSourceBookRef(ref) {
-                label = "\(parsed.safe) · 第 \(parsed.chapter) 章"
+                label = "\(parsed.safe) · ch.\(parsed.chapter)"
             }
             return Entry(
                 word: p.word,

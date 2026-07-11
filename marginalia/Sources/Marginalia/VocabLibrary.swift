@@ -226,7 +226,7 @@ enum VocabLibraryError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .resourceMissing: return "找不到词库资源 (Resources/ngsl/vocab_gap_words.json)"
+        case .resourceMissing: return "word library resource missing (Resources/ngsl/vocab_gap_words.json)"
         }
     }
 }

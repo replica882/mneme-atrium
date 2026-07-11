@@ -19,13 +19,13 @@ enum VocabPromptDefaults {
 
     /// 占位符说明 —— 设置面板展示给用户看。
     static let placeholderDocs: [(key: String, desc: String)] = [
-        ("word", "词面（如 apple）"),
-        ("definition", "释义"),
-        ("band", "频段（如 NGSL 1-500）"),
-        ("categories", "词表，顿号分隔（如 General NGSL、Spoken NGSL）"),
-        ("forms", "词形变化，逗号分隔。空时整行省"),
-        ("status", "当前学习状态（已掌握 / 反应慢 / 不认识）。未标过整行省"),
-        ("assistantName", "当前楼层 AI 的名字"),
+        ("word", "the word itself (e.g. apple)"),
+        ("definition", "definition"),
+        ("band", "frequency band (e.g. NGSL 1-500)"),
+        ("categories", "word lists, comma-separated (e.g. General NGSL, Spoken NGSL)"),
+        ("forms", "word forms, comma-separated. Whole line omitted if empty"),
+        ("status", "current status (known / slow / unknown). Whole line omitted if unmarked"),
+        ("assistantName", "the assistant’s name"),
     ]
 
     /// 渲染：把 `{key}` 替换成对应 value。

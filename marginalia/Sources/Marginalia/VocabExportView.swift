@@ -30,14 +30,14 @@ struct VocabExportView: View {
             VStack(alignment: .leading, spacing: 16) {
                 infoCard
                 exportButton(
-                    title: "导出缺口 CSV",
-                    detail: "Excel / 文本编辑器可读，逗号分隔",
+                    title: "Export gap CSV",
+                    detail: "readable in Excel / any text editor, comma-separated",
                     icon: "tablecells",
                     isAnki: false
                 )
                 exportButton(
-                    title: "导出 Anki TSV",
-                    detail: "Anki Desktop / AnkiMobile 直接导入，Tab 分隔",
+                    title: "Export Anki TSV",
+                    detail: "imports directly into Anki Desktop / AnkiMobile, tab-separated",
                     icon: "rectangle.stack.badge.plus",
                     isAnki: true
                 )
@@ -70,14 +70,14 @@ struct VocabExportView: View {
             HStack {
                 Image(systemName: "info.circle")
                     .foregroundColor(JournalTheme.mint)
-                Text("\(gapCount) 个缺口词将导出")
+                Text("\(gapCount) gap words will be exported")
                     .font(.system(size: JournalTheme.F.body, weight: .semibold))
                     .foregroundColor(JournalTheme.ink)
             }
-            Text("字段：word / definition / categories / forms / status / seconds / note")
+            Text("Fields: word / definition / categories / forms / status / seconds / note")
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
-            Text("仅包含「反应慢 / 不认识」的词，「认识」的不进导出。")
+            Text("Only slow/unknown words are included — known words are left out.")
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }

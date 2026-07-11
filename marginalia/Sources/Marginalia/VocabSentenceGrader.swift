@@ -5,19 +5,21 @@ import Foundation
 enum VocabSentenceGrader {
 
     static let systemPrompt = """
-    你是英语用词判分器。用户在练习用目标单词造句，判断句子是否正确、自然地使用了目标词。
-    判分标准：词性用对、语义搭配合理、句子本身通顺。轻微拼写或标点瑕疵不扣。
-    只输出 JSON，不要解释：
-    {"ok": true/false, "feedback": "一句话中文点评；错了指出错在哪并给一个正确示例"}
+    You grade English vocabulary usage. The user is practicing a target word in a sentence \
+    they wrote — judge whether it\'s used correctly and naturally.
+    Criteria: right part of speech, sensible collocation, the sentence reads naturally. \
+    Minor spelling/punctuation slips don\'t count against it.
+    Output JSON only, no explanation:
+    {"ok": true/false, "feedback": "one-sentence note; if wrong, say what\'s off and give a correct example"}
     """
 
     static func buildRequest(word: String, definition: String?, sentence: String)
         -> (systemPrompt: String, messages: [(role: String, content: String)]) {
-        var user = "目标词：\(word)"
+        var user = "Target word: \(word)"
         if let def = definition, !def.isEmpty {
-            user += "（\(def)）"
+            user += " (\(def))"
         }
-        user += "\n用户造的句子：\(sentence)"
+        user += "\nUser\'s sentence: \(sentence)"
         return (systemPrompt: systemPrompt, messages: [(role: "user", content: user)])
     }
 

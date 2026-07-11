@@ -20,7 +20,7 @@ struct VocabStudyView: View {
     @Bindable var store: VocabSessionStore
     @Environment(\.modelContext) private var modelContext
 
-    @AppStorage("assistantName") private var assistantName = "助手"
+    @AppStorage("assistantName") private var assistantName = "the assistant"
     @AppStorage("vocabAskPromptTemplate") private var promptTemplate = VocabPromptDefaults.template
 
     /// 计时器秒数（每秒 tick），mark 时用 sessionStart 算真实秒数（不依赖这个 UI 值）。
@@ -272,7 +272,7 @@ struct VocabStudyView: View {
 
             // 释义（blur 先猜后看——刷词高频，比撕胶带快）；词库外雅思词 ECDICT 兜底
             Text(word.definition.isEmpty
-                 ? (VocabDictStore.entry(for: word.word)?.t ?? "暂无释义，点 full entry 查")
+                 ? (VocabDictStore.entry(for: word.word)?.t ?? "no definition yet — check full entry")
                  : word.definition)
                 .font(.system(size: 16))
                 .foregroundColor(store.revealed ? JournalTheme.ink : JournalTheme.pencil)
@@ -348,10 +348,10 @@ struct VocabStudyView: View {
             cards.removeAll { $0.word == word.word }
             VocabCardStore.save(cards)
             isInReviewDeck = false
-            ToastCenter.shared.show("已从复习牌堆移除")
+            ToastCenter.shared.show("Removed from review deck")
         } else if VocabCardStore.addIfAbsent(word: word.word, source: "screening") {
             isInReviewDeck = true
-            ToastCenter.shared.show("已进复习 🔁")
+            ToastCenter.shared.show("Added to review 🔁")
         }
     }
 
@@ -366,11 +366,11 @@ struct VocabStudyView: View {
                 try? modelContext.save()
             }
             isInNotebook = false
-            ToastCenter.shared.show("已移出生词本")
+            ToastCenter.shared.show("Removed from notebook")
         } else if VocabCollector.collectManually(rawText: word.word, context: modelContext) != nil {
             isInNotebook = true
             hapticAsk()
-            ToastCenter.shared.show("已收进生词本 ✨")
+            ToastCenter.shared.show("Added to notebook ✨")
         }
     }
 
@@ -404,7 +404,7 @@ struct VocabStudyView: View {
             guard let nid = chatJumpNodeId else { return }
             bridge.openChatSource?(nid, chatJumpIsThinking ? store.currentWord?.word : nil)
         } label: {
-            Text(chatJumpIsThinking ? "思考链原处 →" : "对话原处 →")
+            Text(chatJumpIsThinking ? "thinking →" : "chat →")
                 .font(JournalTheme.serifItalic(12.5))
                 .foregroundColor(JournalTheme.rose)
                 .padding(.vertical, 5)
@@ -418,7 +418,7 @@ struct VocabStudyView: View {
         Button {
             if let w = vocabJumpWord { jumpDetailWord = w }
         } label: {
-            Text("考古笔记 · \(vocabJumpWord ?? "") →")
+            Text("dig notes · \(vocabJumpWord ?? "") →")
                 .font(JournalTheme.serifItalic(12.5))
                 .foregroundColor(JournalTheme.rose)
                 .lineLimit(1)
@@ -489,7 +489,7 @@ struct VocabStudyView: View {
             HStack(spacing: 6) {
                 Image(systemName: "bubble.left.and.bubble.right")
                     .font(.system(size: 11))
-                Text("问\(assistantName)")
+                Text("ask \(assistantName)")
                     .font(JournalTheme.serif(13, .medium))
             }
             .foregroundColor(JournalTheme.ink.opacity(0.85))
@@ -510,9 +510,9 @@ struct VocabStudyView: View {
         let prompt = buildPrompt(word: word)
         if ask(word.word, prompt) {
             hapticAsk()
-            ToastCenter.shared.show("已发给\(assistantName)，去聊天看回复")
+            ToastCenter.shared.show("Sent to \(assistantName) — check chat for the reply")
         } else {
-            ToastCenter.shared.show("发送失败")
+            ToastCenter.shared.show("Failed to send")
         }
     }
 
@@ -522,9 +522,9 @@ struct VocabStudyView: View {
         let statusZh: String = {
             guard let st = snap[word.word]?.status else { return "" }
             switch st {
-            case .known:   return "已掌握"
-            case .slow:    return "反应慢"
-            case .unknown: return "不认识"
+            case .known:   return "known"
+            case .slow:    return "slow"
+            case .unknown: return "unknown"
             }
         }()
 
