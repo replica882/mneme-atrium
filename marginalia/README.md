@@ -46,6 +46,8 @@ open mneme-atrium/marginalia/App/MarginaliaApp.xcodeproj
 
 Xcode 里选自己的开发者签名（Signing & Capabilities → Team）→ 选 iOS 或 macOS scheme → **Run**。装到自己手机需要免费 Apple ID 即可（7 天签名）或开发者账号。
 
+> 报 `No Accounts` / `doesn't include signing certificate`？Xcode → Settings → Accounts 登录你的 Apple ID 再 Run 一次（Xcode 会自动注册描述文件）。
+
 standalone 版不含问 AI / 考古按钮等桥接功能（入口自动隐藏），核心闭环完整：刷词、SM-2 复习、生词本、统计、tag、内嵌词典、发音。
 
 ## 快速接入
