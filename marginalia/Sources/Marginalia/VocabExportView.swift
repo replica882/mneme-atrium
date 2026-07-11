@@ -30,14 +30,14 @@ struct VocabExportView: View {
             VStack(alignment: .leading, spacing: 16) {
                 infoCard
                 exportButton(
-                    title: "Export gap CSV",
-                    detail: "readable in Excel / any text editor, comma-separated",
+                    title: t("Export gap CSV", "导出缺口 CSV"),
+                    detail: t("readable in Excel / any text editor, comma-separated", "Excel / 文本编辑器可读，逗号分隔"),
                     icon: "tablecells",
                     isAnki: false
                 )
                 exportButton(
-                    title: "Export Anki TSV",
-                    detail: "imports directly into Anki Desktop / AnkiMobile, tab-separated",
+                    title: t("Export Anki TSV", "导出 Anki TSV"),
+                    detail: t("imports directly into Anki Desktop / AnkiMobile, tab-separated", "Anki Desktop / AnkiMobile 直接导入，Tab 分隔"),
                     icon: "rectangle.stack.badge.plus",
                     isAnki: true
                 )
@@ -70,14 +70,14 @@ struct VocabExportView: View {
             HStack {
                 Image(systemName: "info.circle")
                     .foregroundColor(JournalTheme.mint)
-                Text("\(gapCount) gap words will be exported")
+                Text(t("\(gapCount) gap words will be exported", "\(gapCount) 个缺口词将导出"))
                     .font(.system(size: JournalTheme.F.body, weight: .semibold))
                     .foregroundColor(JournalTheme.ink)
             }
-            Text("Fields: word / definition / categories / forms / status / seconds / note")
+            Text(t("Fields: word / definition / categories / forms / status / seconds / note", "字段：word / definition / categories / forms / status / seconds / note"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
-            Text("Only slow/unknown words are included — known words are left out.")
+            Text(t("Only slow/unknown words are included — known words are left out.", "仅包含「反应慢 / 不认识」的词，「认识」的不进导出。"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }

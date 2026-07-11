@@ -26,7 +26,7 @@ struct VocabFilterView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 // R2-1 模型 A：语义钉死，避免与复习词书混淆
-                Text("Filters only affect the words tab — the review wordbook is picked on the review tab")
+                Text(t("Filters only affect the words tab — the review wordbook is picked on the review tab", "筛选只影响刷词；复习的词书在复习页选"))
                     .font(.system(size: JournalTheme.F.caption))
                     .foregroundColor(JournalTheme.faint)
                 searchSection
@@ -68,7 +68,7 @@ struct VocabFilterView: View {
 
     private var searchSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            sectionHeader("Search")
+            sectionHeader(t("Search", "搜索"))
             HStack(spacing: 8) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(JournalTheme.faint)
@@ -95,7 +95,7 @@ struct VocabFilterView: View {
     private var categoriesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                sectionHeader("Word lists (multi-select)")
+                sectionHeader(t("Word lists (multi-select)", "词表（多选）"))
                 Spacer()
                 Text("\(store.selectedCats.count) / \(allCategories.count)")
                     .font(.system(size: JournalTheme.F.caption))
@@ -104,21 +104,21 @@ struct VocabFilterView: View {
 
             // 快捷按钮
             HStack(spacing: 8) {
-                quickBtn("all") {
+                quickBtn(t("all", "全选")) {
                     store.selectedCats = Set(allCategories)
                     store.ieltsOn = true
                     reapply()
                 }
-                quickBtn("core 5") {
+                quickBtn(t("core 5", "核心 5")) {
                     store.selectedCats = Set(coreCats)
                     reapply()
                 }
-                quickBtn("clear") {
+                quickBtn(t("clear", "清空")) {
                     store.selectedCats = []
                     store.ieltsOn = false
                     reapply()
                 }
-                quickBtn("shuffle") {
+                quickBtn(t("shuffle", "随机")) {
                     store.shuffleFiltered()
                 }
             }
@@ -164,7 +164,7 @@ struct VocabFilterView: View {
             reapply()
         } label: {
             HStack(spacing: 4) {
-                Text("IELTS 4000")
+                Text(t("IELTS 4000", "雅思 4000"))
                     .font(.system(size: JournalTheme.F.secondary, weight: .medium))
                 Text("\(ieltsCount)")
                     .font(.system(size: JournalTheme.F.caption))
@@ -187,10 +187,10 @@ struct VocabFilterView: View {
     private var tagsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                sectionHeader("Tags (multi-select)")
+                sectionHeader(t("Tags (multi-select)", "标签（多选）"))
                 Spacer()
                 if !store.selectedTags.isEmpty {
-                    Button("clear") {
+                    Button(t("clear", "清空")) {
                         store.selectedTags = []
                         reapply()
                     }
@@ -230,15 +230,15 @@ struct VocabFilterView: View {
 
     private var bandSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionHeader("Band (single-select)")
-            Picker("Band", selection: Binding(
+            sectionHeader(t("Band (single-select)", "频段（单选）"))
+            Picker(t("Band", "频段"), selection: Binding(
                 get: { store.band ?? "" },
                 set: { v in
                     store.band = v.isEmpty ? nil : v
                     reapply()
                 }
             )) {
-                Text("all").tag("")
+                Text(t("all", "全部")).tag("")
                 ForEach(allBands, id: \.self) { b in
                     Text(b).tag(b)
                 }
@@ -262,14 +262,14 @@ struct VocabFilterView: View {
 
     private var togglesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionHeader("What to do with known words")
-            Toggle("Hide words you know", isOn: $store.hideKnown)
+            sectionHeader(t("What to do with known words", "学过的怎么处理"))
+            Toggle(t("Hide words you know", "隐藏已认识的词"), isOn: $store.hideKnown)
                 .onChange(of: store.hideKnown) { _, _ in reapply() }
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
-            Toggle("Only show gaps (slow / unknown)", isOn: $store.onlyGap)
+            Toggle(t("Only show gaps (slow / unknown)", "只看缺口（反应慢 / 不认识）"), isOn: $store.onlyGap)
                 .onChange(of: store.onlyGap) { _, _ in reapply() }
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
-            Toggle("Only show notebook words", isOn: $store.onlyCollected)
+            Toggle(t("Only show notebook words", "只看生词本"), isOn: $store.onlyCollected)
                 .onChange(of: store.onlyCollected) { _, _ in reapply() }
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
         }

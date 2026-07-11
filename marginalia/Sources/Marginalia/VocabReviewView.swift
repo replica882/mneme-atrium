@@ -171,9 +171,9 @@ struct VocabReviewView: View {
                         Button(role: .destructive) {
                             let word = card.word
                             store.removeCurrentCard()
-                            showToast("Removed “\(word)” from deck")
+                            showToast(t("Removed “\(word)” from deck", "已从牌堆移除「\(word)」"))
                         } label: {
-                            Label("Remove from review deck", systemImage: "trash")
+                            Label(t("Remove from review deck", "从复习牌堆移除"), systemImage: "trash")
                         }
                     }
                     // 笔记：认读揭示后 / 拼写答完 / 造句全程可见（不泄题）
@@ -246,7 +246,7 @@ struct VocabReviewView: View {
     /// 词书选择：词书名文字即入口（R2-1 模型 A：只管配额供卡，与筛选页无关）。
     private var sourceMenu: some View {
         Menu {
-            Picker("Wordbook", selection: $quotaSourceRaw) {
+            Picker(t("Wordbook", "词书"), selection: $quotaSourceRaw) {
                 ForEach(VocabQuotaSource.allCases) { s in
                     Text(s.title).tag(s.rawValue)
                 }
@@ -405,7 +405,7 @@ struct VocabReviewView: View {
     private var readMaterial: String {
         if let def = libWord?.definition, !def.isEmpty { return def }
         if let anchor = anchorText, !anchor.isEmpty { return "“\(anchor)”" }
-        return "no definition yet — write one in notes"
+        return t("no definition yet — write one in notes", "暂无释义，可在笔记里写")
     }
 
     private func sourceLabel(_ source: String) -> String {
@@ -425,7 +425,7 @@ struct VocabReviewView: View {
             HStack(spacing: 4) {
                 Image(systemName: "scroll")
                     .font(.system(size: 10))
-                Text("Word details")
+                Text(t("Word details", "词详情"))
                     .font(.system(size: 11, weight: .medium))
             }
             .foregroundColor(JournalTheme.pencil)
@@ -456,7 +456,7 @@ struct VocabReviewView: View {
                 .frame(maxWidth: .infinity, minHeight: 70)
 
             if spellState == .wrong {
-                Text("Correct spelling: \(card.word)")
+                Text(t("Correct spelling: \(card.word)", "正确拼写：\(card.word)"))
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(JournalTheme.clay)
             } else if spellState == .correct {
@@ -465,7 +465,7 @@ struct VocabReviewView: View {
                     .foregroundColor(JournalTheme.mint)
             }
 
-            TextField("type the spelling…", text: $spellDraft)
+            TextField(t("type the spelling…", "输入拼写…"), text: $spellDraft)
                 .font(.system(size: 20, design: .monospaced))
                 .multilineTextAlignment(.center)
                 .textFieldStyle(.plain)
@@ -490,7 +490,7 @@ struct VocabReviewView: View {
             Button {
                 submitSpelling(card: card)
             } label: {
-                Text("Submit")
+                Text(t("Submit", "提交"))
                     .font(.system(size: JournalTheme.F.body, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -587,7 +587,7 @@ struct VocabReviewView: View {
                 Button {
                     submitSentence(card: card)
                 } label: {
-                    Text("Submit for grading")
+                    Text(t("Submit for grading", "提交判分"))
                         .font(.system(size: JournalTheme.F.body, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -611,7 +611,7 @@ struct VocabReviewView: View {
                         HStack(spacing: 6) {
                             Image(systemName: ok ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
                                 .foregroundColor(ok ? JournalTheme.mint : JournalTheme.clay)
-                            Text(gradeFeedback.isEmpty ? (ok ? "nice, that works" : "give it another look") : gradeFeedback)
+                            Text(gradeFeedback.isEmpty ? (ok ? t("nice, that works", "用对了") : t("give it another look", "再看看")) : gradeFeedback)
                                 .font(.system(size: JournalTheme.F.secondary))
                                 .foregroundColor(JournalTheme.ink)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -623,7 +623,7 @@ struct VocabReviewView: View {
                         )
                         .padding(.horizontal, 12)
                     } else {
-                        Text("AI grading unavailable — grade it yourself")
+                        Text(t("AI grading unavailable — grade it yourself", "AI 判分不可用，自己评一下"))
                             .font(.system(size: JournalTheme.F.caption))
                             .foregroundColor(JournalTheme.faint)
                     }
@@ -733,27 +733,27 @@ struct VocabReviewView: View {
                         .listRowBackground(JournalTheme.cream)
                         .onSubmit { confirmAdd() }
                 } header: {
-                    Text("Add to review deck")
+                    Text(t("Add to review deck", "加进复习牌堆"))
                         .foregroundColor(JournalTheme.faint)
                 } footer: {
-                    Text("Any word, any list — whatever you picked up today. Phrases work too.")
+                    Text(t("Any word, any list — whatever you picked up today. Phrases work too.", "不限词表，今天学到什么加什么。词组也可以。"))
                         .font(.system(size: JournalTheme.F.caption))
                         .foregroundColor(JournalTheme.faint)
                 }
             }
             .scrollContentBackground(.hidden)
             .background(JournalTheme.sage)
-            .navigationTitle("Add word")
+            .navigationTitle(t("Add word", "加词"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { showAddSheet = false }
+                    Button(t("Cancel", "取消")) { showAddSheet = false }
                         .foregroundColor(JournalTheme.pencil)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") { confirmAdd() }
+                    Button(t("Add", "加入")) { confirmAdd() }
                         .foregroundColor(JournalTheme.mint)
                         .disabled(addDraft.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
@@ -771,9 +771,9 @@ struct VocabReviewView: View {
         if store.addCard(rawWord: raw, source: "manual") {
             // R3.1：手动加词同步收进生词本——两边数量对齐心智（配额卡仍不进生词本）
             VocabCollector.collectManually(rawText: raw, context: modelContext)
-            showToast("Added to review + notebook")
+            showToast(t("Added to review + notebook", "已加入复习 + 生词本"))
         } else {
-            showToast("Already in the deck")
+            showToast(t("Already in the deck", "已在牌堆里啦"))
         }
     }
 
@@ -789,7 +789,7 @@ struct VocabReviewView: View {
             Text("a blank page")
                 .font(JournalTheme.serifItalic(17))
                 .foregroundColor(JournalTheme.pencil)
-            Text("Add a word, send one in from words/notebook,\nor pick a wordbook to auto-supply daily new cards")
+            Text(t("Add a word, send one in from words/notebook,\nor pick a wordbook to auto-supply daily new cards", "加词、从刷词/生词本送入，\n或选一本词书让每日新卡自动补充"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
                 .multilineTextAlignment(.center)

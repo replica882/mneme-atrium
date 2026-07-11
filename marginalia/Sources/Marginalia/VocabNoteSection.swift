@@ -42,7 +42,7 @@ struct VocabNoteSection: View {
                         return .handled
                     })
             } else {
-                Text("No notes yet. Write something, add a photo, link related words with [[word]]…")
+                Text(t("No notes yet. Write something, add a photo, link related words with [[word]]…", "还没有笔记。写点什么、贴张照片，[[词]] 连起相关词…"))
                     .font(JournalTheme.serifItalic(12.5))
                     .foregroundColor(JournalTheme.faint)
             }
@@ -187,11 +187,11 @@ struct VocabNoteSection: View {
                 #endif
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { showEditor = false }
+                        Button(t("Cancel", "取消")) { showEditor = false }
                             .foregroundColor(JournalTheme.pencil)
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Save") {
+                        Button(t("Save", "保存")) {
                             if let pid = profileId {
                                 try? VocabNoteStore.writeNote(word: word, content: editorDraft, profileId: pid)
                             }

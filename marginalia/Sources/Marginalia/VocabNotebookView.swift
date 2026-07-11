@@ -204,27 +204,27 @@ struct VocabNotebookView: View {
                         .listRowBackground(JournalTheme.cream)
                         .onSubmit { confirmAdd() }
                 } header: {
-                    Text("Add to notebook")
+                    Text(t("Add to notebook", "收进生词本"))
                         .foregroundColor(JournalTheme.faint)
                 } footer: {
-                    Text("Any word, any list — whatever you picked up today. Phrases work too.")
+                    Text(t("Any word, any list — whatever you picked up today. Phrases work too.", "不限词表，今天学到什么收什么。词组也可以。"))
                         .font(.system(size: JournalTheme.F.caption))
                         .foregroundColor(JournalTheme.faint)
                 }
             }
             .scrollContentBackground(.hidden)
             .background(JournalTheme.sage)
-            .navigationTitle("Add word")
+            .navigationTitle(t("Add word", "加词"))
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { showAddSheet = false }
+                    Button(t("Cancel", "取消")) { showAddSheet = false }
                         .foregroundColor(JournalTheme.pencil)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") { confirmAdd() }
+                    Button(t("Add", "收入")) { confirmAdd() }
                         .foregroundColor(JournalTheme.mint)
                         .disabled(addDraft.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
@@ -240,10 +240,10 @@ struct VocabNotebookView: View {
         showAddSheet = false
         guard !raw.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         if let word = VocabCollector.collectManually(rawText: raw, context: modelContext) {
-            ToastCenter.shared.show("Added “\(word)” ✨")
+            ToastCenter.shared.show(t("Added “\(word)” ✨", "已收「\(word)」✨"))
             Task { await reload() }
         } else {
-            ToastCenter.shared.show("That doesn’t look like a word")
+            ToastCenter.shared.show(t("That doesn’t look like a word", "这个不适合收词"))
         }
     }
 
@@ -277,7 +277,7 @@ struct VocabNotebookView: View {
         .padding(.bottom, 6)
 
         if !normalized.isEmpty && !exactInLibrary {
-            searchRow(word: normalized, definition: "not in library · added as custom entry", alreadyIn: collected.contains(normalized))
+            searchRow(word: normalized, definition: t("not in library · added as custom entry", "词库外 · 收为自定义词条"), alreadyIn: collected.contains(normalized))
         }
         ForEach(searchResults) { w in
             searchRow(word: w.word, definition: w.definition, alreadyIn: collected.contains(w.word))
@@ -327,10 +327,10 @@ struct VocabNotebookView: View {
                 progress.anchorText = nil
                 try? modelContext.save()
             }
-            ToastCenter.shared.show("Removed “\(word)”")
+            ToastCenter.shared.show(t("Removed “\(word)”", "已移出「\(word)」"))
             Task { await reload() }
         } else if VocabCollector.collectManually(rawText: word, context: modelContext) != nil {
-            ToastCenter.shared.show("Added “\(word)” ✨")
+            ToastCenter.shared.show(t("Added “\(word)” ✨", "已收「\(word)」✨"))
             // 不清搜索——查词心智下收完继续浏览，行上 ✨ 随 reload 变实心
             Task { await reload() }
         }
@@ -351,7 +351,7 @@ struct VocabNotebookView: View {
             cards.removeAll { $0.word == word }
             VocabCardStore.save(cards)
         }
-        ToastCenter.shared.show("Removed “\(word)”")
+        ToastCenter.shared.show(t("Removed “\(word)”", "已移出「\(word)」"))
         Task { await reload() }
     }
 
@@ -401,10 +401,10 @@ struct VocabNotebookView: View {
                         cards.removeAll { $0.word == entry.word }
                         VocabCardStore.save(cards)
                         deckWords.remove(entry.word)
-                        ToastCenter.shared.show("Removed from review deck")
+                        ToastCenter.shared.show(t("Removed from review deck", "已从复习牌堆移除"))
                     } else if VocabCardStore.addIfAbsent(word: entry.word, source: "notebook") {
                         deckWords.insert(entry.word)
-                        ToastCenter.shared.show("“\(entry.word)” added to review 🔁")
+                        ToastCenter.shared.show(t("“\(entry.word)” added to review 🔁", "「\(entry.word)」已进复习 🔁"))
                     }
                 } label: {
                     Image(systemName: "repeat")
@@ -424,7 +424,7 @@ struct VocabNotebookView: View {
             Button(role: .destructive) {
                 removeFromNotebook(entry)
             } label: {
-                Label("Remove from notebook (also deletes review card)", systemImage: "trash")
+                Label(t("Remove from notebook (also deletes review card)", "移出生词本（复习卡一并删）"), systemImage: "trash")
             }
         }
     }
@@ -474,7 +474,7 @@ struct VocabNotebookView: View {
     /// 行长按「标签…」子菜单：已有 tag 打勾切换（横向 tap 防手滑分裂），新建走词详情。
     @ViewBuilder
     private func tagMenu(for entry: Entry) -> some View {
-        Menu("Tags…") {
+        Menu(t("Tags…", "标签…")) {
             ForEach(allTags, id: \.self) { t in
                 Button {
                     VocabTagStore.toggle(word: entry.word, tag: t)
@@ -488,7 +488,7 @@ struct VocabNotebookView: View {
                 }
             }
             if allTags.isEmpty {
-                Text("No tags yet — make one from a word’s detail page")
+                Text(t("No tags yet — make one from a word’s detail page", "还没有标签，去词详情建一个"))
             }
         }
     }
@@ -530,7 +530,7 @@ struct VocabNotebookView: View {
             var label: String? = nil
             if let ref = p.sourceBookRef,
                let parsed = VocabStudyView.parseSourceBookRef(ref) {
-                label = "\(parsed.safe) · ch.\(parsed.chapter)"
+                label = t("\(parsed.safe) · ch.\(parsed.chapter)", "\(parsed.safe) · 第 \(parsed.chapter) 章")
             }
             return Entry(
                 word: p.word,

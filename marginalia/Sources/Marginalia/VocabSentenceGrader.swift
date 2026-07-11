@@ -4,14 +4,14 @@ import Foundation
 /// AUDN 提取 / 做梦同款链路。任何失败返回 nil → UI 降级自评（App 自包含，AI 是增强）。
 enum VocabSentenceGrader {
 
-    static let systemPrompt = """
+    static var systemPrompt: String { """
     You grade English vocabulary usage. The user is practicing a target word in a sentence \
     they wrote — judge whether it\'s used correctly and naturally.
     Criteria: right part of speech, sensible collocation, the sentence reads naturally. \
     Minor spelling/punctuation slips don\'t count against it.
     Output JSON only, no explanation:
-    {"ok": true/false, "feedback": "one-sentence note; if wrong, say what\'s off and give a correct example"}
-    """
+    {"ok": true/false, "feedback": "one-sentence note IN \(L10n.isChinese ? "Chinese" : "English"); if wrong, say what\'s off and give a correct example"}
+    """ }
 
     static func buildRequest(word: String, definition: String?, sentence: String)
         -> (systemPrompt: String, messages: [(role: String, content: String)]) {

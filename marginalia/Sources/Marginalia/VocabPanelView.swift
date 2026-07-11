@@ -138,7 +138,7 @@ struct VocabPanelView: View {
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text("Loading word library…")
+            Text(t("Loading word library…", "加载词库…"))
                 .font(.system(size: JournalTheme.F.body))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -150,7 +150,7 @@ struct VocabPanelView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 28))
                 .foregroundColor(JournalTheme.clay)
-            Text("Failed to load word library")
+            Text(t("Failed to load word library", "词库加载失败"))
                 .font(.system(size: JournalTheme.F.body, weight: .semibold))
                 .foregroundColor(JournalTheme.ink)
             Text(message)

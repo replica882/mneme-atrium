@@ -10,6 +10,7 @@ import JournalKit
 /// 目前只有一项：「问 {{char}}」按钮的 prompt 模板。
 struct VocabSettingsTab: View {
     @Environment(\.vocabBridge) private var bridge
+    @AppStorage(L10n.langKey) private var langChoice: String = "system"
     @AppStorage("vocabAskPromptTemplate") private var template: String = VocabPromptDefaults.template
     @AppStorage("vocabShuffleByDefault") private var shuffleByDefault: Bool = false
     @AppStorage("vocabReviewDailyQuota") private var reviewDailyQuota: Int = 10
@@ -29,6 +30,7 @@ struct VocabSettingsTab: View {
 
     var body: some View {
         Form {
+            languageSection
             orderSection
             reviewSection
             if bridge.askAI != nil {
@@ -48,24 +50,41 @@ struct VocabSettingsTab: View {
         }
         .scrollContentBackground(.hidden)
         .background(Color(hex: 0xFAFAF8).ignoresSafeArea())
-        .navigationTitle("Settings")
+        .navigationTitle(t("Settings", "设置"))
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
+    }
+
+    // MARK: - 语言
+
+    private var languageSection: some View {
+        Section {
+            Picker(t("Language", "语言"), selection: $langChoice) {
+                Text(t("Follow system", "跟随系统")).tag("system")
+                Text("English").tag("en")
+                Text("中文").tag("zh")
+            }
+            .listRowBackground(JournalTheme.cream)
+        } header: {
+            Text(t("Language", "语言"))
+                .foregroundColor(JournalTheme.faint)
+        }
     }
 
     // MARK: - 出词顺序
 
     private var orderSection: some View {
         Section {
-            Toggle("Shuffle by default", isOn: $shuffleByDefault)
+            Toggle(t("Shuffle by default", "默认随机出词"), isOn: $shuffleByDefault)
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("Word order")
+            Text(t("Word order", "出词顺序"))
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("Off: words come in recommended order (high-frequency first).\nOn: shuffled every time you refilter or revisit settings.")
+            Text(t("Off: words come in recommended order (high-frequency first).\nOn: shuffled every time you refilter or revisit settings.",
+                   "关：按推荐学习顺序出词（高频先）。\n开：每次重新筛选/切设置时洗牌，每轮都是新随机。"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -77,7 +96,7 @@ struct VocabSettingsTab: View {
         Section {
             Stepper(value: $reviewDailyQuota, in: 0...50) {
                 HStack {
-                    Text("Daily new cards")
+                    Text(t("Daily new cards", "每日新卡"))
                     Spacer()
                     Text("\(reviewDailyQuota)")
                         .foregroundColor(JournalTheme.pencil)
@@ -88,23 +107,24 @@ struct VocabSettingsTab: View {
 
             Stepper(value: $reviewDailyCap, in: 0...300, step: 10) {
                 HStack {
-                    Text("Daily review cap")
+                    Text(t("Daily review cap", "每日复习上限"))
                     Spacer()
-                    Text(reviewDailyCap == 0 ? "no limit" : "\(reviewDailyCap)")
+                    Text(reviewDailyCap == 0 ? t("no limit", "不限") : "\(reviewDailyCap)")
                         .foregroundColor(JournalTheme.pencil)
                         .monospacedDigit()
                 }
             }
             .listRowBackground(JournalTheme.cream)
 
-            Toggle("Auto-add highlighted words to review", isOn: $reviewAutoFromReading)
+            Toggle(t("Auto-add highlighted words to review", "划词收词进复习"), isOn: $reviewAutoFromReading)
                 .toggleStyle(SwitchToggleStyle(tint: JournalTheme.mint))
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("Review")
+            Text(t("Review", "复习"))
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("Daily new cards: how many new cards get pulled in each day from the selected wordbook, in order. 0 = don't auto-supply.\nDaily review cap: max cards reviewed today (new + due combined); once hit, you'll see the done screen. Overflow due cards just wait until tomorrow. 0 = no cap.\nAuto-add: words you collect while reading or chatting go straight into the review deck.\n\nExercises climb with familiarity: new cards start as read-and-reveal, then spelling (fill the blank from the definition or source sentence) once you've gotten it right twice, then sentence-writing once the interval passes 7 days. A miss drops it back to read-and-reveal. Long-press a card to remove it from the deck.")
+            Text(t("Daily new cards: how many new cards get pulled in each day from the selected wordbook, in order. 0 = don't auto-supply.\nDaily review cap: max cards reviewed today (new + due combined); once hit, you'll see the done screen. Overflow due cards just wait until tomorrow. 0 = no cap.\nAuto-add: words you collect while reading or chatting go straight into the review deck.\n\nExercises climb with familiarity: new cards start as read-and-reveal, then spelling (fill the blank from the definition or source sentence) once you've gotten it right twice, then sentence-writing once the interval passes 7 days. A miss drops it back to read-and-reveal. Long-press a card to remove it from the deck.",
+                   "每日新卡：复习页每天自动从所选词书按顺序补充这么多张新卡，0 = 不自动补。\n每日复习上限：今天最多复习这么多张（新卡+到期都算），到量出完成页；没排进今天的到期卡明天照常出现，0 = 不限。\n划词收词进复习：开了之后收进生词本的词自动加入复习牌堆。\n\n题型随熟悉度爬坡：新卡出认读（先猜后看），答对两次后出拼写（按释义或原句挖空默写），间隔拉到 7 天以上出造句（AI 判分）；答错会跌回认读重学。长按卡片可从牌堆移除。"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -128,10 +148,10 @@ struct VocabSettingsTab: View {
                 .listRowBackground(JournalTheme.cream)
             }
         } header: {
-            Text("Available placeholders")
+            Text(t("Available placeholders", "可用占位符"))
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("`{forms}` or `{status}` hide their whole line automatically when empty — no dangling colons.")
+            Text(t("`{forms}` or `{status}` hide their whole line automatically when empty — no dangling colons.", "`{forms}` 或 `{status}` 为空时整行自动隐藏，不会出现空冒号。"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -147,10 +167,10 @@ struct VocabSettingsTab: View {
                 .scrollContentBackground(.hidden)
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("Template")
+            Text(t("Template", "模板"))
                 .foregroundColor(JournalTheme.faint)
         } footer: {
-            Text("Rendered into the prompt sent to your AI when you tap “ask {{char}}”.")
+            Text(t("Rendered into the prompt sent to your AI when you tap “ask {{char}}”.", "按下「问 {{char}}」按钮时这套模板会被渲染成 prompt 发给 AI。"))
                 .font(.system(size: JournalTheme.F.caption))
                 .foregroundColor(JournalTheme.faint)
         }
@@ -166,7 +186,7 @@ struct VocabSettingsTab: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .listRowBackground(JournalTheme.cream)
         } header: {
-            Text("Preview (with word forms + marked as slow)")
+            Text(t("Preview (with word forms + marked as slow)", "预览（带词形 + 已标 反应慢）"))
                 .foregroundColor(JournalTheme.faint)
         }
     }
@@ -174,12 +194,12 @@ struct VocabSettingsTab: View {
     private var previewText: String {
         VocabPromptDefaults.render(template: template, vars: [
             "word": "ephemeral",
-            "definition": "brief; fleeting",
+            "definition": t("brief; fleeting", "短暂的；瞬息的"),
             "band": "Specialized / overlap",
             "categories": "Academic NAWL",
             "forms": "ephemerals, ephemerally",
-            "status": "slow",
-            "assistantName": "the assistant",
+            "status": t("slow", "反应慢"),
+            "assistantName": t("the assistant", "助手"),
         ])
     }
 
@@ -190,18 +210,18 @@ struct VocabSettingsTab: View {
             Button {
                 showResetConfirm = true
             } label: {
-                Text("Reset to default")
+                Text(t("Reset to default", "恢复默认模板"))
                     .foregroundColor(JournalTheme.clay)
             }
             .listRowBackground(JournalTheme.cream)
         }
-        .confirmationDialog("Reset the template to default?", isPresented: $showResetConfirm, titleVisibility: .visible) {
-            Button("Reset", role: .destructive) {
+        .confirmationDialog(t("Reset the template to default?", "把模板恢复成默认？"), isPresented: $showResetConfirm, titleVisibility: .visible) {
+            Button(t("Reset", "恢复"), role: .destructive) {
                 template = VocabPromptDefaults.template
             }
-            Button("Cancel", role: .cancel) {}
+            Button(t("Cancel", "取消"), role: .cancel) {}
         } message: {
-            Text("This will overwrite your current edits.")
+            Text(t("This will overwrite your current edits.", "当前编辑的模板会被覆盖。"))
         }
     }
 }

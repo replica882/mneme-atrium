@@ -18,15 +18,15 @@ enum VocabPromptDefaults {
     """
 
     /// 占位符说明 —— 设置面板展示给用户看。
-    static let placeholderDocs: [(key: String, desc: String)] = [
-        ("word", "the word itself (e.g. apple)"),
-        ("definition", "definition"),
-        ("band", "frequency band (e.g. NGSL 1-500)"),
-        ("categories", "word lists, comma-separated (e.g. General NGSL, Spoken NGSL)"),
-        ("forms", "word forms, comma-separated. Whole line omitted if empty"),
-        ("status", "current status (known / slow / unknown). Whole line omitted if unmarked"),
-        ("assistantName", "the assistant’s name"),
-    ]
+    static var placeholderDocs: [(key: String, desc: String)] { [
+        ("word", t("the word itself (e.g. apple)", "词面（如 apple）")),
+        ("definition", t("definition", "释义")),
+        ("band", t("frequency band (e.g. NGSL 1-500)", "频段（如 NGSL 1-500）")),
+        ("categories", t("word lists, comma-separated (e.g. General NGSL, Spoken NGSL)", "词表（如 General NGSL、Spoken NGSL）")),
+        ("forms", t("word forms, comma-separated. Whole line omitted if empty", "词形变化，逗号分隔。空时整行省")),
+        ("status", t("current status (known / slow / unknown). Whole line omitted if unmarked", "当前学习状态。未标过整行省")),
+        ("assistantName", t("the assistant’s name", "AI 的名字")),
+    ] }
 
     /// 渲染：把 `{key}` 替换成对应 value。
     /// 行内含 `{forms}` 或 `{status}` 且对应值为空时，**整行删**（避免出现 "- 词形：" 这种空冒号）。

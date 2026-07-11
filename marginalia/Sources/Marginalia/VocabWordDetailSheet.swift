@@ -162,7 +162,7 @@ struct VocabWordDetailSheet: View {
                 archeologyHint = nil
                 Task { await load() }
             } else {
-                archeologyHint = "dig failed — try again later"
+                archeologyHint = t("dig failed — try again later", "考古失败了，稍后再试")
             }
         }
         #if os(macOS)
@@ -181,10 +181,10 @@ struct VocabWordDetailSheet: View {
                 HStack(spacing: 6) {
                     if archeologyRunning {
                         ProgressView().controlSize(.small)
-                        Text("digging… a minute or two")
+                        Text(t("digging… a minute or two", "考古中…大约一两分钟"))
                     } else {
                         Image(systemName: "scroll")
-                        Text("dig this word")
+                        Text(t("dig this word", "考古这个词"))
                     }
                 }
                 .font(JournalTheme.serifItalic(13.5))
@@ -211,7 +211,7 @@ struct VocabWordDetailSheet: View {
     private func requestArcheology() {
         guard !archeologyRunning else { return }
         guard let request = bridge.requestArcheology, request(word) else {
-            archeologyHint = "host app hasn’t wired the dig pipeline (see scripts/vocab-daily.ts)"
+            archeologyHint = t("host app hasn’t wired the dig pipeline (see scripts/vocab-daily.ts)", "宿主未接考古管线（脚本版见 scripts/vocab-daily.ts）")
             return
         }
         archeologyRunning = true
@@ -254,7 +254,7 @@ struct VocabWordDetailSheet: View {
                         refreshTags()
                     }
                 }
-                Button("New tag…") { showTagInput = true }
+                Button(t("New tag…", "新标签…")) { showTagInput = true }
             } label: {
                 Text("+ tag")
                     .font(JournalTheme.serifItalic(11.5))
@@ -270,10 +270,10 @@ struct VocabWordDetailSheet: View {
             .menuStyle(.button)
             .buttonStyle(.plain)
         }
-        .alert("New tag", isPresented: $showTagInput) {
-            TextField("e.g. ielts-topic-a", text: $tagDraft)
-            Button("Cancel", role: .cancel) { tagDraft = "" }
-            Button("Add") {
+        .alert(t("New tag", "新标签"), isPresented: $showTagInput) {
+            TextField(t("e.g. ielts-topic-a", "比如：雅思a话题"), text: $tagDraft)
+            Button(t("Cancel", "取消"), role: .cancel) { tagDraft = "" }
+            Button(t("Add", "加上")) {
                 VocabTagStore.toggle(word: word, tag: tagDraft)
                 tagDraft = ""
                 refreshTags()
@@ -302,11 +302,11 @@ struct VocabWordDetailSheet: View {
             if let ref = progress.sourceBookRef,
                let parsed = VocabStudyView.parseSourceBookRef(ref) {
                 var name = parsed.safe
-                sourceLabel = "\(name) · ch.\(parsed.chapter)"
+                sourceLabel = t("\(name) · ch.\(parsed.chapter)", "\(name) · 第 \(parsed.chapter) 章")
             } else if let ref = progress.sourceBookRef,
                       let srcWord = VocabCollector.parseVocabRef(ref) {
                 vocabJumpWord = srcWord
-                sourceLabel = "dig notes · \(srcWord)"
+                sourceLabel = t("dig notes · \(srcWord)", "考古笔记 · \(srcWord)")
             } else if let ref = progress.sourceBookRef,
                       let nid = VocabCollector.parseThinkingRef(ref) ?? VocabCollector.parseChatRef(ref) {
                 // 组件库版：无消息库可预检，接了 openChatSource 桥即可点
@@ -314,9 +314,9 @@ struct VocabWordDetailSheet: View {
                 if bridge.openChatSource != nil {
                     chatJumpNodeId = nid
                     jumpIsThinking = isThinking
-                    sourceLabel = isThinking ? "thinking · tap to jump back" : "chat · tap to jump back"
+                    sourceLabel = isThinking ? t("thinking · tap to jump back", "思考链 · 点击跳回") : t("chat · tap to jump back", "对话 · 点击跳回")
                 } else {
-                    sourceLabel = "from a chat"
+                    sourceLabel = t("from a chat", "来自对话")
                 }
             }
         }
@@ -389,7 +389,7 @@ struct VocabWordDetailSheet: View {
     @ViewBuilder
     private func anchorBlock(_ anchor: String) -> some View {
         let content = VStack(alignment: .leading, spacing: 6) {
-            Label(sourceLabel ?? "source", systemImage: chatJumpNodeId != nil ? "bubble.left" : "book.closed")
+            Label(sourceLabel ?? t("source", "出处"), systemImage: chatJumpNodeId != nil ? "bubble.left" : "book.closed")
                 .font(JournalTheme.serif(11, .semibold))
                 .foregroundColor(JournalTheme.rose)
             Text("\u{201C}\(anchor)\u{201D}")
@@ -424,7 +424,7 @@ struct VocabWordDetailSheet: View {
 
     private func aiNoteBlock(_ note: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label("\(assistantName)’s notes", systemImage: "sparkles")
+            Label(t("\(assistantName)’s notes", "\(assistantName)的注解"), systemImage: "sparkles")
                 .font(JournalTheme.serif(11, .semibold))
                 .foregroundColor(JournalTheme.mint)
             pageOneMarkdown(note)
@@ -442,7 +442,7 @@ struct VocabWordDetailSheet: View {
             Text("nothing dug up yet")
                 .font(JournalTheme.serifItalic(15))
                 .foregroundColor(JournalTheme.pencil)
-            Text("A nightly dig will fill this in over time, or tap “ask \(assistantName)” on the word card")
+            Text(t("A nightly dig will fill this in over time, or tap “ask \(assistantName)” on the word card", "夜里的考古触发器会慢慢补，也可以在学习卡点「问\(assistantName)」"))
                 .font(JournalTheme.serifItalic(12))
                 .foregroundColor(JournalTheme.faint)
                 .multilineTextAlignment(.center)

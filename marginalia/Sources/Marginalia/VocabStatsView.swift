@@ -231,7 +231,7 @@ struct VocabStatsView: View {
             HStack(spacing: 5) {
                 Image(systemName: "square.and.arrow.up")
                     .font(.system(size: 11))
-                Text("Export learning data")
+                Text(t("Export learning data", "导出学习数据"))
                     .font(JournalTheme.serifItalic(13))
             }
             .foregroundColor(JournalTheme.pencil)
@@ -247,7 +247,7 @@ struct VocabStatsView: View {
         Button {
             showWipeConfirm = true
         } label: {
-            Text("Clear all progress")
+            Text(t("Clear all progress", "清空所有进度"))
                 .font(JournalTheme.serifItalic(12.5))
                 .foregroundColor(JournalTheme.clay)
                 .padding(.vertical, 6)
@@ -255,16 +255,16 @@ struct VocabStatsView: View {
         }
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
-        .confirmationDialog("Clear all learning progress?", isPresented: $showWipeConfirm, titleVisibility: .visible) {
-            Button("Clear", role: .destructive) {
+        .confirmationDialog(t("Clear all learning progress?", "清空所有学习进度？"), isPresented: $showWipeConfirm, titleVisibility: .visible) {
+            Button(t("Clear", "清空"), role: .destructive) {
                 Task {
                     await store.wipeAllProgress(context: modelContext)
                     await recompute()
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(t("Cancel", "取消"), role: .cancel) {}
         } message: {
-            Text("All know/slow/unknown marks will be cleared — notes go with them.")
+            Text(t("All know/slow/unknown marks will be cleared — notes go with them.", "所有「认识 / 反应慢 / 不认识」标记会被清除，note 也一起没。"))
         }
     }
 }

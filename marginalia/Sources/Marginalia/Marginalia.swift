@@ -15,6 +15,7 @@ import JournalKit
 /// ```
 public struct MarginaliaPanel: View {
     private let bridge: VocabBridge
+    @AppStorage(L10n.langKey) private var langChoice: String = "system"
 
     public init(bridge: VocabBridge = VocabBridge()) {
         self.bridge = bridge
@@ -28,5 +29,6 @@ public struct MarginaliaPanel: View {
             GlobalToastOverlay()
         }
         .environment(\.vocabBridge, bridge)
+        .id(langChoice)   // 切语言整树重建（t() 不订阅 UserDefaults）
     }
 }

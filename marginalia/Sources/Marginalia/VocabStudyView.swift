@@ -272,7 +272,7 @@ struct VocabStudyView: View {
 
             // 释义（blur 先猜后看——刷词高频，比撕胶带快）；词库外雅思词 ECDICT 兜底
             Text(word.definition.isEmpty
-                 ? (VocabDictStore.entry(for: word.word)?.t ?? "no definition yet — check full entry")
+                 ? (VocabDictStore.entry(for: word.word)?.t ?? t("no definition yet — check full entry", "暂无释义，点 full entry 查"))
                  : word.definition)
                 .font(.system(size: 16))
                 .foregroundColor(store.revealed ? JournalTheme.ink : JournalTheme.pencil)
@@ -348,10 +348,10 @@ struct VocabStudyView: View {
             cards.removeAll { $0.word == word.word }
             VocabCardStore.save(cards)
             isInReviewDeck = false
-            ToastCenter.shared.show("Removed from review deck")
+            ToastCenter.shared.show(t("Removed from review deck", "已从复习牌堆移除"))
         } else if VocabCardStore.addIfAbsent(word: word.word, source: "screening") {
             isInReviewDeck = true
-            ToastCenter.shared.show("Added to review 🔁")
+            ToastCenter.shared.show(t("Added to review 🔁", "已进复习 🔁"))
         }
     }
 
@@ -366,11 +366,11 @@ struct VocabStudyView: View {
                 try? modelContext.save()
             }
             isInNotebook = false
-            ToastCenter.shared.show("Removed from notebook")
+            ToastCenter.shared.show(t("Removed from notebook", "已移出生词本"))
         } else if VocabCollector.collectManually(rawText: word.word, context: modelContext) != nil {
             isInNotebook = true
             hapticAsk()
-            ToastCenter.shared.show("Added to notebook ✨")
+            ToastCenter.shared.show(t("Added to notebook ✨", "已收进生词本 ✨"))
         }
     }
 
@@ -404,7 +404,7 @@ struct VocabStudyView: View {
             guard let nid = chatJumpNodeId else { return }
             bridge.openChatSource?(nid, chatJumpIsThinking ? store.currentWord?.word : nil)
         } label: {
-            Text(chatJumpIsThinking ? "thinking →" : "chat →")
+            Text(chatJumpIsThinking ? t("thinking →", "思考链原处 →") : t("chat →", "对话原处 →"))
                 .font(JournalTheme.serifItalic(12.5))
                 .foregroundColor(JournalTheme.rose)
                 .padding(.vertical, 5)
@@ -418,7 +418,7 @@ struct VocabStudyView: View {
         Button {
             if let w = vocabJumpWord { jumpDetailWord = w }
         } label: {
-            Text("dig notes · \(vocabJumpWord ?? "") →")
+            Text(t("dig notes · \(vocabJumpWord ?? "") →", "考古笔记 · \(vocabJumpWord ?? "") →"))
                 .font(JournalTheme.serifItalic(12.5))
                 .foregroundColor(JournalTheme.rose)
                 .lineLimit(1)
@@ -489,7 +489,7 @@ struct VocabStudyView: View {
             HStack(spacing: 6) {
                 Image(systemName: "bubble.left.and.bubble.right")
                     .font(.system(size: 11))
-                Text("ask \(assistantName)")
+                Text(t("ask \(assistantName)", "问\(assistantName)"))
                     .font(JournalTheme.serif(13, .medium))
             }
             .foregroundColor(JournalTheme.ink.opacity(0.85))
@@ -510,9 +510,9 @@ struct VocabStudyView: View {
         let prompt = buildPrompt(word: word)
         if ask(word.word, prompt) {
             hapticAsk()
-            ToastCenter.shared.show("Sent to \(assistantName) — check chat for the reply")
+            ToastCenter.shared.show(t("Sent to \(assistantName) — check chat for the reply", "已发给\(assistantName)，去聊天看回复"))
         } else {
-            ToastCenter.shared.show("Failed to send")
+            ToastCenter.shared.show(t("Failed to send", "发送失败"))
         }
     }
 
@@ -522,9 +522,9 @@ struct VocabStudyView: View {
         let statusZh: String = {
             guard let st = snap[word.word]?.status else { return "" }
             switch st {
-            case .known:   return "known"
-            case .slow:    return "slow"
-            case .unknown: return "unknown"
+            case .known:   return t("known", "已掌握")
+            case .slow:    return t("slow", "反应慢")
+            case .unknown: return t("unknown", "不认识")
             }
         }()
 
