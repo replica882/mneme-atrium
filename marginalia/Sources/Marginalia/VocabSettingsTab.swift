@@ -44,7 +44,7 @@ struct VocabSettingsTab: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(PixelLaceBackdrop(sparse: true).ignoresSafeArea())
+        .background(Color(hex: 0xFAFAF8).ignoresSafeArea())
         .navigationTitle("单词")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
