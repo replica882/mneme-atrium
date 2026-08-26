@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/github/v/release/replica882/mneme-atrium?style=flat-square&label=download&color=8EBD9F" alt="Download">
   </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-AGPL--3.0%20%2B%20Commons%20Clause-E7EEEC?style=flat-square" alt="License">
+    <img src="https://img.shields.io/badge/license-AGPL--3.0-E7EEEC?style=flat-square" alt="License">
   </a>
   <img src="https://img.shields.io/badge/platform-macOS%2015%2B%20%7C%20iOS%2026%2B-333?style=flat-square" alt="Platform">
 </p>
@@ -69,9 +69,11 @@ https://testflight.apple.com/join/XSdkH7mP
 
 ## 协议
 
-本项目采用 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html) + [Commons Clause](https://commonsclause.com/) 协议。
+本项目采用 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html) 协议，无附加条款。
 
-简单说：你可以看代码、学习、修改、自用，但**不能把它拿去卖**。详见 [LICENSE](LICENSE)。
+简单说：你可以看代码、学习、修改、自用、分发；改了再分发（包括当网络服务提供）必须同样开源。详见 [LICENSE](LICENSE)，第三方组件的许可见 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)。
+
+> 2026-08-26 起去掉了原来的 Commons Clause（禁售条款）：它与 GPL 系许可证「不得附加限制」的要求冲突，也挡住了嵌入 GPLv3 组件（如离线沙箱内核 iSH）的路。
 
 ---
 
